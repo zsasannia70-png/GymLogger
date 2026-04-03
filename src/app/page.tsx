@@ -1,87 +1,66 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Workout, WorkoutEntry } from '@/types';
-import { getWorkoutByDate, addEntryToWorkout, updateWorkoutEntry, deleteWorkoutEntry, deleteMovementFromWorkout, finishWorkout } from '@/lib/firestore';
+import { WorkoutEntry } from '@/types';
+import { useTodayWorkout } from '@/hooks/useTodayWorkout';
 import { WorkoutForm } from '@/components/workout/WorkoutForm';
 import { WorkoutList } from '@/components/workout/WorkoutList';
 import { SkeletonList } from '@/components/ui/Skeleton';
-import { Check } from 'lucide-react';
 
 export default function HomePage() {
   const { user } = useAuth();
-  const [workout, setWorkout] = useState<Workout | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { 
+    workout, 
+    loading, 
+    addEntry, 
+    updateEntry, 
+    removeEntry, 
+    removeMovementFromWorkout, 
+    finalizeWorkout,
+    refresh
+  } = useTodayWorkout();
+  
   const [showUndo, setShowUndo] = useState(false);
   const [pendingDeletions, setPendingDeletions] = useState<{ movementName: string, entries: WorkoutEntry[] } | null>(null);
   const [confirmFinish, setConfirmFinish] = useState(false);
 
-  const todayStr = new Date().toISOString().split('T')[0];
-
-  useEffect(() => {
-    if (user) {
-      loadTodayWorkout();
-    }
-  }, [user]);
-
-  const loadTodayWorkout = async () => {
-    if (!user) return;
-    setLoading(true);
-    const w = await getWorkoutByDate(user.uid, todayStr);
-    setWorkout(w);
-    setLoading(false);
-  };
-
   const handleLogSet = async (entry: Omit<WorkoutEntry, 'id' | 'createdAt'>) => {
     if (!user) return;
-    
-    // Optimistic UI could be here, but simpler to just re-fetch or push to state
-    const newW = await addEntryToWorkout(user.uid, todayStr, entry);
-    setWorkout(newW);
+    await addEntry(entry);
   };
 
   const handleDuplicateSet = async (entry: WorkoutEntry) => {
     if (!user) return;
-    const newEntry = {
+    await addEntry({
       movementName: entry.movementName,
       reps: entry.reps,
       weight: entry.weight,
       unit: entry.unit,
       notes: ''
-    };
-    const newW = await addEntryToWorkout(user.uid, todayStr, newEntry);
-    setWorkout(newW);
+    });
   };
 
   const handleUpdateSet = async (entryId: string, updates: Partial<WorkoutEntry>) => {
     if (!user || !workout) return;
-    // Optimistic
-    const copy = { ...workout, entries: workout.entries.map(e => e.id === entryId ? { ...e, ...updates } : e) };
-    setWorkout(copy);
-    await updateWorkoutEntry(user.uid, workout.id, entryId, updates);
+    await updateEntry(workout.id, entryId, updates);
   };
 
   const handleDeleteSet = async (entryId: string) => {
     if (!user || !workout) return;
-    const copy = { ...workout, entries: workout.entries.filter(e => e.id !== entryId) };
-    setWorkout(copy);
-    await deleteWorkoutEntry(user.uid, workout.id, entryId);
+    await removeEntry(workout.id, entryId);
   };
 
   const handleDeleteMovement = async (movementName: string) => {
     if (!user || !workout) return;
     
     const targeted = workout.entries.filter(e => e.movementName === movementName);
-    const remaining = workout.entries.filter(e => e.movementName !== movementName);
     
     // Save state for undo
     setPendingDeletions({ movementName, entries: targeted });
     setShowUndo(true);
     
-    // Optimistic remove
-    setWorkout({ ...workout, entries: remaining });
-    await deleteMovementFromWorkout(user.uid, workout.id, movementName);
+    await removeMovementFromWorkout(workout.id, movementName);
     
     // Hide toast after 5s
     setTimeout(() => {
@@ -94,9 +73,8 @@ export default function HomePage() {
     if (!user || !pendingDeletions) return;
     setShowUndo(false);
     
-    // Re-add to firestore
     for (const e of pendingDeletions.entries) {
-      await addEntryToWorkout(user.uid, todayStr, {
+      await addEntry({
         movementName: e.movementName,
         reps: e.reps,
         weight: e.weight,
@@ -104,7 +82,6 @@ export default function HomePage() {
         notes: e.notes || ''
       });
     }
-    await loadTodayWorkout();
     setPendingDeletions(null);
   };
 
@@ -115,8 +92,7 @@ export default function HomePage() {
       return;
     }
     if (user && workout) {
-      await finishWorkout(user.uid, workout.id);
-      // Optional: show a big success checkmark overlay
+      await finalizeWorkout(workout.id);
       setConfirmFinish(false);
     }
   };
@@ -129,7 +105,7 @@ export default function HomePage() {
   return (
     <div className="animate-fade-in relative pb-10">
       <div className="flex justify-between items-end mb-4">
-        <h1 className="text-2xl font-bold">Today's Workout</h1>
+        <h1 className="text-2xl font-bold">Today&apos;s Workout</h1>
         <span className="text-sm text-text-tertiary">{entries.length} sets • {volume}kg total</span>
       </div>
 

@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Movement, TemplateEntry, Template } from '@/types';
-import { getMovements } from '@/lib/firestore';
-import { useAuth } from '@/contexts/AuthContext';
-import { Trash2, Copy, GripVertical } from 'lucide-react';
+import React, { useState } from 'react';
+import { TemplateEntry, Template } from '@/types';
+import { Trash2, Copy } from 'lucide-react';
+import { useMovements } from '@/hooks/useMovements';
 
 interface TemplateEditorProps {
   template: Template | null;
@@ -13,33 +12,23 @@ interface TemplateEditorProps {
 }
 
 export function TemplateEditor({ template, onSave, onCancel }: TemplateEditorProps) {
-  const { user } = useAuth();
-  const [movements, setMovements] = useState<Movement[]>([]);
+  const { movements, loading: loadingMovements } = useMovements();
   const [name, setName] = useState(template?.name || '');
   const [entries, setEntries] = useState<TemplateEntry[]>(template?.entries || []);
   const [search, setSearch] = useState('');
-  const [suggestions, setSuggestions] = useState<Movement[]>([]);
   const [isSaving, setIsSaving] = useState(false);
 
-  useEffect(() => {
-    if (user) {
-      getMovements(user.uid).then(setMovements).catch(console.error);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (!search) {
-      setSuggestions([]);
-      return;
-    }
+  const suggestions = React.useMemo(() => {
+    if (!search) return [];
     const lowerQ = search.toLowerCase();
-    setSuggestions(movements.filter(m => m.name.toLowerCase().includes(lowerQ)).slice(0, 8));
+    return movements
+      .filter(m => m.name.toLowerCase().includes(lowerQ))
+      .slice(0, 8);
   }, [search, movements]);
 
   const handleAddMovement = (movementName: string) => {
     setEntries(prev => [...prev, { movementName, reps: 0, weight: 0, unit: 'kg' }]);
     setSearch('');
-    setSuggestions([]);
   };
 
   const handleUpdateEntry = (index: number, updates: Partial<TemplateEntry>) => {
@@ -52,7 +41,6 @@ export function TemplateEditor({ template, onSave, onCancel }: TemplateEditorPro
 
   const handleDeleteEntry = (index: number) => {
     setEntries(prev => prev.filter((_, i) => i !== index));
-    // Provide a basic simulated toast/undo conceptually as asked, or just delete
   };
 
   const handleDuplicateEntry = (index: number) => {

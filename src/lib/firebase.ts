@@ -11,10 +11,26 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "mock-app",
 };
 
-const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+export const IS_MOCK_MODE = !process.env.NEXT_PUBLIC_FIREBASE_API_KEY || process.env.NEXT_PUBLIC_FIREBASE_API_KEY === "mock-key";
+
+let app: any;
+let auth: any = {
+  onAuthStateChanged: () => () => {}, // Mock unsubscribe
+  signOut: async () => {},
+};
+let db: any = {};
 const googleProvider = new GoogleAuthProvider();
+
+try {
+  if (!IS_MOCK_MODE) {
+    app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    db = getFirestore(app);
+  }
+} catch (error) {
+  console.error("Firebase initialization failed. Falling back to mock mode.", error);
+  // auth and db remain as mock objects defined above
+}
 
 googleProvider.setCustomParameters({
   prompt: 'select_account'

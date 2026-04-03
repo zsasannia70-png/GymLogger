@@ -1,40 +1,41 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Template } from '@/types';
-import { getTemplates, deleteTemplate, saveTemplate, addEntriesToWorkout, getWorkoutByDate } from '@/lib/firestore';
+import { useTemplates } from '@/hooks/useTemplates';
+import { useTodayWorkout } from '@/hooks/useTodayWorkout';
 import { TemplateEditor } from '@/components/templates/TemplateEditor';
 import { SkeletonList } from '@/components/ui/Skeleton';
 import { StaggeredList } from '@/components/ui/StaggeredList';
 import { useRouter } from 'next/navigation';
+import { ArrowUp, ArrowDown } from 'lucide-react';
 
 export default function TemplatesPage() {
-  const { user } = useAuth();
+  const { user, seedInitialTemplates } = useAuth();
   const router = useRouter();
-  const [templates, setTemplates] = useState<Template[]>([]);
-  const [loading, setLoading] = useState(true);
+  
+  const { templates, loading: templatesLoading, addTemplate, removeTemplate, updateOrders, refresh: refreshTemplates } = useTemplates();
+  const { workout: todayWorkout, addEntry: addTodayEntry } = useTodayWorkout();
+  
   const [editingTemplate, setEditingTemplate] = useState<Template | null | 'new'>(null);
   const [loadingId, setLoadingId] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (user) loadTemplates();
-  }, [user]);
-
-  const loadTemplates = async () => {
-    if (!user) return;
-    setLoading(true);
-    const data = await getTemplates(user.uid);
-    setTemplates(data);
-    setLoading(false);
-  };
 
   const handleLoad = async (t: Template) => {
     if (!user) return;
     setLoadingId(t.id);
-    const todayStr = new Date().toISOString().split('T')[0];
-    const newEntries = t.entries.map(e => ({ ...e, notes: '' }));
-    await addEntriesToWorkout(user.uid, todayStr, newEntries);
+    
+    // Add all entries from template to today's workout
+    for (const e of t.entries) {
+      await addTodayEntry({
+        movementName: e.movementName,
+        reps: e.reps,
+        weight: e.weight,
+        unit: e.unit,
+        notes: ''
+      });
+    }
+
     // show success briefly
     setTimeout(() => {
       setLoadingId(null);
@@ -45,36 +46,47 @@ export default function TemplatesPage() {
   const handleDelete = async (id: string) => {
     if (!user) return;
     if (confirm('Delete template?')) {
-      await deleteTemplate(user.uid, id);
-      setTemplates(templates.filter(t => t.id !== id));
+      await removeTemplate(id);
     }
   };
 
-  const handleSaveEditor = async (templateData: any) => {
+  const handleMove = async (index: number, direction: 'up' | 'down') => {
     if (!user) return;
-    await saveTemplate(user.uid, templateData);
+    const newTemplates = [...templates];
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    
+    if (newIndex < 0 || newIndex >= templates.length) return;
+    
+    // Swap
+    [newTemplates[index], newTemplates[newIndex]] = [newTemplates[newIndex], newTemplates[index]];
+    
+    await updateOrders(newTemplates);
+  };
+
+  const handleSaveEditor = async (templateData: Template | Omit<Template, 'id'>) => {
+    if (!user) return;
+    await addTemplate(templateData);
     setEditingTemplate(null);
-    await loadTemplates();
   };
 
   const handleSaveCurrentAsTemplate = async () => {
     if (!user) return;
-    const todayStr = new Date().toISOString().split('T')[0];
-    const w = await getWorkoutByDate(user.uid, todayStr);
     
-    if (w && w.entries.length > 0) {
-      const templateEntries = w.entries.map(e => ({
+    if (todayWorkout && todayWorkout.entries.length > 0) {
+      const templateEntries = todayWorkout.entries.map(e => ({
         movementName: e.movementName,
         reps: e.reps,
         weight: e.weight,
         unit: e.unit
       }));
+      
+      const todayStr = new Date().toISOString().split('T')[0];
       setEditingTemplate({
         name: `Workout - ${todayStr}`,
         entries: templateEntries,
         createdAt: Date.now(),
         order: templates.length,
-      } as any);
+      } as Template);
     } else {
       alert("No exercises in today's workout to save!");
     }
@@ -102,18 +114,48 @@ export default function TemplatesPage() {
         </button>
       </div>
       
-      {loading ? (
+      {templatesLoading ? (
         <div className="mt-8"><SkeletonList /></div>
       ) : templates.length === 0 ? (
-        <p className="text-text-tertiary text-center mt-10">You have no templates yet.</p>
+        <div className="text-center mt-12 p-8 card-depth rounded-2xl bg-bg-secondary/50">
+          <p className="text-text-tertiary mb-6">You have no templates yet.</p>
+          <button 
+            onClick={async () => {
+              await seedInitialTemplates();
+              await refreshTemplates();
+            }}
+            className="bg-accent text-text-on-accent font-bold px-6 py-3 rounded-xl active:scale-95 transition-transform"
+          >
+            Seed Majestic Templates
+          </button>
+        </div>
       ) : (
         <StaggeredList>
-          {templates.map(t => (
-            <div key={t.id} className="card-depth p-4 mb-4">
-              <div className="flex justify-between items-start mb-2">
-                <h3 className="font-bold text-lg">{t.name}</h3>
-                <span className="text-xs text-text-tertiary bg-bg-tertiary px-2 py-1 rounded-full uppercase tracking-wider">{t.entries.length} Exercises</span>
+          {templates.map((t, index) => (
+            <div key={t.id} className="card-depth p-4 mb-4 flex gap-4">
+              {/* Sort Handles */}
+              <div className="flex flex-col gap-1">
+                <button 
+                  disabled={index === 0}
+                  onClick={() => handleMove(index, 'up')}
+                  className="p-1.5 text-text-tertiary disabled:opacity-20 active:text-accent"
+                >
+                  <ArrowUp size={18} />
+                </button>
+                <button 
+                  disabled={index === templates.length - 1}
+                  onClick={() => handleMove(index, 'down')}
+                  className="p-1.5 text-text-tertiary disabled:opacity-20 active:text-accent"
+                >
+                  <ArrowDown size={18} />
+                </button>
               </div>
+
+              <div className="flex-1">
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="font-bold text-lg">{t.name}</h3>
+                  <span className="text-xs text-text-tertiary bg-bg-tertiary px-2 py-1 rounded-full uppercase tracking-wider">{t.entries.length} Exercises</span>
+                </div>
               
               <p className="text-sm text-text-secondary mb-4 truncate">
                 {t.entries.slice(0, 3).map(e => `${e.movementName}`).join(', ')}
@@ -142,7 +184,8 @@ export default function TemplatesPage() {
                 </button>
               </div>
             </div>
-          ))}
+          </div>
+        ))}
         </StaggeredList>
       )}
 

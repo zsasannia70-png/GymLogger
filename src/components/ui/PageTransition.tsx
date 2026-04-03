@@ -10,7 +10,8 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (children !== displayChildren) {
-      setTransitionState('opacity-0');
+      // Async-ish to avoid cascading renders warning
+      Promise.resolve().then(() => setTransitionState('opacity-0'));
       // A small delay to allow fade out, then swap and fade in.
       // Next.js App Router navigations are fast, so keep this minimal.
       const timer = setTimeout(() => {

@@ -2,22 +2,21 @@
 
 import { useAuth } from '@/contexts/AuthContext';
 import { useSettings } from '@/contexts/SettingsContext';
-import { getWorkouts, getMovements, getTemplates } from '@/lib/firestore';
+import { useWorkouts } from '@/hooks/useWorkouts';
 
 export default function SettingsPage() {
-  const { user, logout } = useAuth();
+  const { user, logout, seedInitialData } = useAuth();
   const { settings, updateSettings } = useSettings();
+  const { workouts: allWorkouts } = useWorkouts();
 
   const handleExportCSV = async () => {
     if (!user) return;
     try {
-      const workouts = await getWorkouts(user.uid);
-      
       const rows = [
         ['Date', 'Movement', 'Weight', 'Unit', 'Reps', 'Notes']
       ];
       
-      workouts.forEach(w => {
+      allWorkouts.forEach(w => {
         w.entries.forEach(e => {
           rows.push([
             w.date,
@@ -115,13 +114,25 @@ export default function SettingsPage() {
         </div>
 
         {/* Data */}
-        <div className="card-depth p-4">
+        <div className="card-depth p-4 space-y-3">
           <h2 className="text-xs font-bold text-text-tertiary uppercase tracking-wider mb-4">Data Management</h2>
           <button 
             onClick={handleExportCSV}
             className="w-full bg-bg-secondary border border-border text-text-primary font-bold py-3 rounded-xl shadow-sm active:bg-bg-tertiary transition-colors"
           >
             Export Workout Logger as CSV
+          </button>
+          
+          <button 
+            onClick={async () => {
+              if (confirm('Verify: Restoration of default movements and majestic templates?')) {
+                await seedInitialData();
+                alert('Defaults restored successfully!');
+              }
+            }}
+            className="w-full bg-accent/10 border border-accent/20 text-accent font-bold py-3 rounded-xl shadow-sm active:bg-accent/20 transition-colors"
+          >
+            Restore Default Data (Majestic)
           </button>
         </div>
 

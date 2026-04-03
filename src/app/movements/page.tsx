@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useMovements } from '@/hooks/useMovements';
 import { Movement, Category } from '@/types';
-import { getMovements, setMovements, deleteMovement } from '@/lib/firestore';
 import { SkeletonList } from '@/components/ui/Skeleton';
 import { StaggeredList } from '@/components/ui/StaggeredList';
 import { Trash2, Search } from 'lucide-react';
@@ -12,28 +12,14 @@ const CATEGORIES: Category[] = ['Legs', 'Back', 'Chest', 'Shoulders', 'Arms', 'C
 
 export default function MovementsPage() {
   const { user } = useAuth();
-  const [movements, setMvmts] = useState<Movement[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { movements, loading, addMovements, removeMovement, refresh } = useMovements();
+  
   const [activeCategory, setActiveCategory] = useState<Category | 'All'>('All');
   const [searchQuery, setSearchQuery] = useState('');
   
   const [newMovementName, setNewMovementName] = useState('');
   const [newMovementCategory, setNewMovementCategory] = useState<Category>('Other');
   const [isAdding, setIsAdding] = useState(false);
-
-  useEffect(() => {
-    if (user) loadData();
-  }, [user]);
-
-  const loadData = async () => {
-    if (!user) return;
-    setLoading(true);
-    const data = await getMovements(user.uid);
-    // Sort alphabetically
-    data.sort((a, b) => a.name.localeCompare(b.name));
-    setMvmts(data);
-    setLoading(false);
-  };
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,8 +39,7 @@ export default function MovementsPage() {
       isCustom: true
     };
     
-    await setMovements(user.uid, [newM]);
-    await loadData();
+    await addMovements([newM]);
     
     setNewMovementName('');
     setIsAdding(false);
@@ -63,8 +48,7 @@ export default function MovementsPage() {
   const handleDelete = async (id: string, name: string) => {
     if (!user) return;
     if (confirm(`Delete ${name}?`)) {
-      await deleteMovement(user.uid, id);
-      setMvmts(movements.filter(m => m.id !== id));
+      await removeMovement(id);
     }
   };
 
@@ -122,7 +106,7 @@ export default function MovementsPage() {
           {['All', ...CATEGORIES].map(c => (
             <button
               key={c}
-              onClick={() => setActiveCategory(c as any)}
+              onClick={() => setActiveCategory(c as Category | 'All')}
               className={`flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
                 activeCategory === c 
                   ? 'bg-accent text-text-on-accent shadow-btn' 

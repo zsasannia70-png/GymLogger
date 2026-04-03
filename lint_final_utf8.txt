@@ -1,0 +1,117 @@
+﻿
+> gym-logger@0.1.0 lint
+> eslint
+
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\history\page.tsx
+  27:15  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\history\page.tsx:27:15
+  25 |
+  26 |   useEffect(() => {
+> 27 |     if (user) loadWorkouts();
+     |               ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  28 |   }, [user]);
+  29 |
+  30 |   const handleDeleteWorkout = async (workoutId: string) => {  react-hooks/set-state-in-effect
+  28:6   warning  React Hook useEffect has a missing dependency: 'loadWorkouts'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  react-hooks/exhaustive-deps
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\movements\page.tsx
+  35:15  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\movements\page.tsx:35:15
+  33 |
+  34 |   useEffect(() => {
+> 35 |     if (user) loadData();
+     |               ^^^^^^^^ Avoid calling setState() directly within an effect
+  36 |   }, [user]);
+  37 |
+  38 |   const handleAdd = async (e: React.FormEvent) => {  react-hooks/set-state-in-effect
+  36:6   warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       react-hooks/exhaustive-deps
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\page.tsx
+  31:7  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\page.tsx:31:7
+  29 |   useEffect(() => {
+  30 |     if (user) {
+> 31 |       loadTodayWorkout();
+     |       ^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  32 |     }
+  33 |   }, [user]);
+  34 |  react-hooks/set-state-in-effect
+  33:6  warning  React Hook useEffect has a missing dependency: 'loadTodayWorkout'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      react-hooks/exhaustive-deps
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\settings\page.tsx
+  5:23  warning  'getMovements' is defined but never used  @typescript-eslint/no-unused-vars
+  5:37  warning  'getTemplates' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\templates\page.tsx
+  30:15  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\templates\page.tsx:30:15
+  28 |
+  29 |   useEffect(() => {
+> 30 |     if (user) loadTemplates();
+     |               ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  31 |   }, [user]);
+  32 |
+  33 |   const handleLoad = async (t: Template) => {  react-hooks/set-state-in-effect
+  31:6   warning  React Hook useEffect has a missing dependency: 'loadTemplates'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      react-hooks/exhaustive-deps
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\components\templates\TemplateEditor.tsx
+  7:24  warning  'GripVertical' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\contexts\AuthContext.tsx
+  62:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\contexts\SettingsContext.tsx
+  31:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\contexts\SettingsContext.tsx:31:7
+  29 |     } else {
+  30 |       // Use a functional update to check if we actually need to reset
+> 31 |       setSettings(prev => {
+     |       ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  32 |         if (prev.unit === defaultSettings.unit && prev.theme === defaultSettings.theme) {
+  33 |           return prev;
+  34 |         }  react-hooks/set-state-in-effect
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\contexts\ThemeContext.tsx
+  3:32  warning  'useContext' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\lib\firestore.ts
+  6:53  warning  'TemplateEntry' is defined but never used  @typescript-eslint/no-unused-vars
+
+Γ£û 15 problems (6 errors, 9 warnings)
+

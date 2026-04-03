@@ -1,0 +1,243 @@
+﻿
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\history\page.tsx
+  19:15  error    Error: Cannot access variable before it is declared
+
+`loadWorkouts` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\history\page.tsx:19:15
+  17 |
+  18 |   useEffect(() => {
+> 19 |     if (user) loadWorkouts();
+     |               ^^^^^^^^^^^^ `loadWorkouts` accessed before it is declared
+  20 |   }, [user]);
+  21 |
+  22 |   const loadWorkouts = async () => {
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\history\page.tsx:22:3
+  20 |   }, [user]);
+  21 |
+> 22 |   const loadWorkouts = async () => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 23 |     if (!user) return;
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 24 |     setLoading(true);
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 25 |     const data = await getWorkouts(user.uid);
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 26 |     setWorkouts(data);
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 27 |     setLoading(false);
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 28 |   };
+     | ^^^^^ `loadWorkouts` is declared here
+  29 |
+  30 |   const handleDeleteWorkout = async (workoutId: string) => {
+  31 |     if (!user) return;  react-hooks/immutability
+  20:6   warning  React Hook useEffect has a missing dependency: 'loadWorkouts'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      react-hooks/exhaustive-deps
+  53:81  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             @typescript-eslint/no-explicit-any
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\movements\page.tsx
+   25:15  error    Error: Cannot access variable before it is declared
+
+`loadData` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\movements\page.tsx:25:15
+  23 |
+  24 |   useEffect(() => {
+> 25 |     if (user) loadData();
+     |               ^^^^^^^^ `loadData` accessed before it is declared
+  26 |   }, [user]);
+  27 |
+  28 |   const loadData = async () => {
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\movements\page.tsx:28:3
+  26 |   }, [user]);
+  27 |
+> 28 |   const loadData = async () => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 29 |     if (!user) return;
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 30 |     setLoading(true);
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 31 |     const data = await getMovements(user.uid);
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 32 |     // Sort alphabetically
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 33 |     data.sort((a, b) => a.name.localeCompare(b.name));
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 34 |     setMvmts(data);
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 35 |     setLoading(false);
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 36 |   };
+     | ^^^^^ `loadData` is declared here
+  37 |
+  38 |   const handleAdd = async (e: React.FormEvent) => {
+  39 |     e.preventDefault();  react-hooks/immutability
+   26:6   warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                react-hooks/exhaustive-deps
+  125:53  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\page.tsx
+   10:10  warning  'Check' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             @typescript-eslint/no-unused-vars
+   24:7   error    Error: Cannot access variable before it is declared
+
+`loadTodayWorkout` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\page.tsx:24:7
+  22 |   useEffect(() => {
+  23 |     if (user) {
+> 24 |       loadTodayWorkout();
+     |       ^^^^^^^^^^^^^^^^ `loadTodayWorkout` accessed before it is declared
+  25 |     }
+  26 |   }, [user]);
+  27 |
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\page.tsx:28:3
+  26 |   }, [user]);
+  27 |
+> 28 |   const loadTodayWorkout = async () => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 29 |     if (!user) return;
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 30 |     setLoading(true);
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 31 |     const w = await getWorkoutByDate(user.uid, todayStr);
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 32 |     setWorkout(w);
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 33 |     setLoading(false);
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 34 |   };
+     | ^^^^^ `loadTodayWorkout` is declared here
+  35 |
+  36 |   const handleLogSet = async (entry: Omit<WorkoutEntry, 'id' | 'createdAt'>) => {
+  37 |     if (!user) return;  react-hooks/immutability
+   26:6   warning  React Hook useEffect has a missing dependency: 'loadTodayWorkout'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           react-hooks/exhaustive-deps
+  132:49  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               react/no-unescaped-entities
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\settings\page.tsx
+  5:23  warning  'getMovements' is defined but never used  @typescript-eslint/no-unused-vars
+  5:37  warning  'getTemplates' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\templates\page.tsx
+  21:15  error    Error: Cannot access variable before it is declared
+
+`loadTemplates` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\templates\page.tsx:21:15
+  19 |
+  20 |   useEffect(() => {
+> 21 |     if (user) loadTemplates();
+     |               ^^^^^^^^^^^^^ `loadTemplates` accessed before it is declared
+  22 |   }, [user]);
+  23 |
+  24 |   const loadTemplates = async () => {
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\templates\page.tsx:24:3
+  22 |   }, [user]);
+  23 |
+> 24 |   const loadTemplates = async () => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 25 |     if (!user) return;
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 26 |     setLoading(true);
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 27 |     const data = await getTemplates(user.uid);
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 28 |     setTemplates(data);
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 29 |     setLoading(false);
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 30 |   };
+     | ^^^^^ `loadTemplates` is declared here
+  31 |
+  32 |   const handleLoad = async (t: Template) => {
+  33 |     if (!user) return;  react-hooks/immutability
+  22:6   warning  React Hook useEffect has a missing dependency: 'loadTemplates'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    react-hooks/exhaustive-deps
+  53:49  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @typescript-eslint/no-explicit-any
+  77:12  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @typescript-eslint/no-explicit-any
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\components\templates\TemplateEditor.tsx
+   7:24  warning  'GripVertical' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      @typescript-eslint/no-unused-vars
+  32:7   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\components\templates\TemplateEditor.tsx:32:7
+  30 |   useEffect(() => {
+  31 |     if (!search) {
+> 32 |       setSuggestions([]);
+     |       ^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  33 |       return;
+  34 |     }
+  35 |     const lowerQ = search.toLowerCase();  react-hooks/set-state-in-effect
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\components\ui\PageTransition.tsx
+  13:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\components\ui\PageTransition.tsx:13:7
+  11 |   useEffect(() => {
+  12 |     if (children !== displayChildren) {
+> 13 |       setTransitionState('opacity-0');
+     |       ^^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  14 |       // A small delay to allow fade out, then swap and fade in.
+  15 |       // Next.js App Router navigations are fast, so keep this minimal.
+  16 |       const timer = setTimeout(() => {  react-hooks/set-state-in-effect
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\components\workout\WorkoutForm.tsx
+  39:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\components\workout\WorkoutForm.tsx:39:7
+  37 |   useEffect(() => {
+  38 |     if (!movementName) {
+> 39 |       setSuggestions([]);
+     |       ^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  40 |       return;
+  41 |     }
+  42 |     const lowerQ = movementName.toLowerCase();  react-hooks/set-state-in-effect
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\contexts\AuthContext.tsx
+  62:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\contexts\SettingsContext.tsx
+  30:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\contexts\SettingsContext.tsx:30:7
+  28 |       getUserSettings(user.uid).then(setSettings).catch(console.error);
+  29 |     } else {
+> 30 |       setSettings(defaultSettings);
+     |       ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  31 |     }
+  32 |   }, [user]);
+  33 |  react-hooks/set-state-in-effect
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\contexts\ThemeContext.tsx
+  3:32  warning  'useContext' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\lib\firestore.ts
+  6:53  warning  'TemplateEntry' is defined but never used  @typescript-eslint/no-unused-vars
+
+Γ£û 24 problems (14 errors, 10 warnings)
+

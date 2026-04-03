@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-import { Movement, WorkoutEntry } from '@/types';
-import { getMovements } from '@/lib/firestore';
+import React, { useState, useRef } from 'react';
+import { WorkoutEntry } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
+import { useMovements } from '@/hooks/useMovements';
 
 interface WorkoutFormProps {
   onLogSet: (entry: Omit<WorkoutEntry, 'id' | 'createdAt'>) => Promise<void>;
@@ -13,7 +13,7 @@ interface WorkoutFormProps {
 
 export function WorkoutForm({ onLogSet, lastEntry, sessionEntries }: WorkoutFormProps) {
   const { user } = useAuth();
-  const [movements, setMovements] = useState<Movement[]>([]);
+  const { movements, loading: loadingMovements } = useMovements();
   
   const [movementName, setMovementName] = useState('');
   const [reps, setReps] = useState<number | ''>('');
@@ -21,33 +21,23 @@ export function WorkoutForm({ onLogSet, lastEntry, sessionEntries }: WorkoutForm
   const [notes, setNotes] = useState('');
   
   const [showNotes, setShowNotes] = useState(false);
-  const [suggestions, setSuggestions] = useState<Movement[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Focus ref for auto focus
   const movementInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (user) {
-      getMovements(user.uid).then(setMovements).catch(console.error);
-    }
-  }, [user]);
-
-  // Handle autocomplete filtering
-  useEffect(() => {
-    if (!movementName) {
-      setSuggestions([]);
-      return;
-    }
+  // Handle autocomplete filtering - derived state to avoid synchronous setState in effect
+  const suggestions = React.useMemo(() => {
+    if (!movementName) return [];
     const lowerQ = movementName.toLowerCase();
-    const matches = movements.filter(m => m.name.toLowerCase().includes(lowerQ));
-    setSuggestions(matches.slice(0, 8));
+    return movements
+      .filter(m => m.name.toLowerCase().includes(lowerQ))
+      .slice(0, 8);
   }, [movementName, movements]);
 
   // Smart defaults: prefill based on selected movement name
   const handleSelectMovement = (name: string) => {
     setMovementName(name);
-    setSuggestions([]);
     
     // Find last set of this movement in the current session
     if (sessionEntries) {

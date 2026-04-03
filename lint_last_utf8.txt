@@ -1,0 +1,79 @@
+﻿
+> gym-logger@0.1.0 lint
+> eslint
+
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\history\page.tsx
+  27:15  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\history\page.tsx:27:15
+  25 |
+  26 |   useEffect(() => {
+> 27 |     if (user) loadWorkouts();
+     |               ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  28 |   }, [user, loadWorkouts]);
+  29 |
+  30 |   const handleDeleteWorkout = async (workoutId: string) => {  react-hooks/set-state-in-effect
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\movements\page.tsx
+  35:15  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\movements\page.tsx:35:15
+  33 |
+  34 |   useEffect(() => {
+> 35 |     if (user) loadData();
+     |               ^^^^^^^^ Avoid calling setState() directly within an effect
+  36 |   }, [user, loadData]);
+  37 |
+  38 |   const handleAdd = async (e: React.FormEvent) => {  react-hooks/set-state-in-effect
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\page.tsx
+  31:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\page.tsx:31:7
+  29 |   useEffect(() => {
+  30 |     if (user) {
+> 31 |       loadTodayWorkout();
+     |       ^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  32 |     }
+  33 |   }, [user, loadTodayWorkout]);
+  34 |  react-hooks/set-state-in-effect
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\templates\page.tsx
+  30:15  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\src\app\templates\page.tsx:30:15
+  28 |
+  29 |   useEffect(() => {
+> 30 |     if (user) loadTemplates();
+     |               ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  31 |   }, [user, loadTemplates]);
+  32 |
+  33 |   const handleLoad = async (t: Template) => {  react-hooks/set-state-in-effect
+
+Γ£û 4 problems (4 errors, 0 warnings)
+

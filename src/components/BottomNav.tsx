@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
 import { Activity, ClipboardList, Dumbbell, BarChart2, Settings } from 'lucide-react';
 
 const TABS = [
@@ -14,12 +15,20 @@ const TABS = [
 
 export function BottomNav() {
   const pathname = usePathname();
+  const { isDemoMode } = useAuth();
   
   // Do not show navigation on login page
   if (pathname === '/login') return null;
 
   return (
     <nav className="fixed bottom-0 left-0 w-full z-50">
+      {isDemoMode && (
+        <div className="flex justify-center mb-2">
+          <div className="bg-orange-500/10 border border-orange-500/30 px-3 py-1 rounded-full backdrop-blur-md">
+            <span className="text-[10px] font-black text-orange-500 tracking-widest uppercase">Demo Mode • Local Storage</span>
+          </div>
+        </div>
+      )}
       <div className="max-w-lg mx-auto bg-glass-bg backdrop-blur-xl border-t border-border"
            style={{ backgroundColor: 'var(--glass-bg)', borderColor: 'var(--glass-border)' }}>
         <div className="flex justify-around items-center h-16 pb-[env(safe-area-inset-bottom)]">

@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useAuth } from './AuthContext';
 import { UserSettings } from '@/types';
 import { getUserSettings, saveUserSettings } from '@/lib/firestore';
+import { MockFirestore } from '@/lib/mockFirestore';
 
 interface SettingsContextType {
   settings: UserSettings;
@@ -20,22 +21,48 @@ const SettingsContext = createContext<SettingsContextType>({
 export const useSettings = () => useContext(SettingsContext);
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
+  const { user, isDemoMode } = useAuth();
   const [settings, setSettings] = useState<UserSettings>(defaultSettings);
 
   useEffect(() => {
     if (user) {
-      getUserSettings(user.uid).then(setSettings).catch(console.error);
+      const fetchSettings = async () => {
+        try {
+          const data = isDemoMode 
+            ? await MockFirestore.getUserSettings(user.uid)
+            : await getUserSettings(user.uid);
+          setSettings(data);
+        } catch (err) {
+          console.error('Error loading settings:', err);
+        }
+      };
+      fetchSettings();
     } else {
-      setSettings(defaultSettings);
+      // Use a microtask to avoid "synchronous setState in effect" warning
+      Promise.resolve().then(() => {
+        setSettings(prev => {
+          if (prev.unit === defaultSettings.unit && prev.theme === defaultSettings.theme) {
+            return prev;
+          }
+          return defaultSettings;
+        });
+      });
     }
-  }, [user]);
+  }, [user, isDemoMode]);
 
   const updateSettings = async (newSettings: Partial<UserSettings>) => {
     const nextSettings = { ...settings, ...newSettings };
     setSettings(nextSettings);
     if (user) {
-      await saveUserSettings(user.uid, newSettings);
+      try {
+        if (isDemoMode) {
+          await MockFirestore.saveUserSettings(user.uid, newSettings);
+        } else {
+          await saveUserSettings(user.uid, newSettings);
+        }
+      } catch (err) {
+        console.error('Error saving settings:', err);
+      }
     }
   };
 

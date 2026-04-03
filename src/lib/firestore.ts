@@ -1,12 +1,14 @@
-import { db } from './firebase';
+import { db, IS_MOCK_MODE } from './firebase';
+import { MockFirestore } from './mockFirestore';
 import { 
   collection, doc, getDocs, getDoc, setDoc, updateDoc,
   deleteDoc, query, orderBy, where
 } from 'firebase/firestore';
-import { Workout, WorkoutEntry, Movement, Template, TemplateEntry, UserSettings } from '@/types';
+import { Workout, WorkoutEntry, Movement, Template, UserSettings } from '@/types';
 
 // Workouts
 export async function getWorkouts(userId: string): Promise<Workout[]> {
+  if (IS_MOCK_MODE) return MockFirestore.getWorkouts(userId);
   const workoutsRef = collection(db, `users/${userId}/workouts`);
   const q = query(workoutsRef, orderBy('createdAt', 'desc'));
   const snapshot = await getDocs(q);
@@ -23,6 +25,7 @@ export async function getWorkouts(userId: string): Promise<Workout[]> {
 }
 
 export async function getWorkoutByDate(userId: string, dateStr: string): Promise<Workout | null> {
+  if (IS_MOCK_MODE) return MockFirestore.getWorkoutByDate(userId, dateStr);
   const workoutsRef = collection(db, `users/${userId}/workouts`);
   const q = query(workoutsRef, where('date', '==', dateStr));
   const snapshot = await getDocs(q);
@@ -38,6 +41,7 @@ export async function addEntriesToWorkout(
   dateStr: string,
   newEntries: Omit<WorkoutEntry, 'id' | 'createdAt'>[]
 ): Promise<Workout> {
+  if (IS_MOCK_MODE) return MockFirestore.addEntriesToWorkout(userId, dateStr, newEntries);
   let workout = await getWorkoutByDate(userId, dateStr);
   
   const entriesWithMeta: WorkoutEntry[] = newEntries.map(e => ({
@@ -80,6 +84,7 @@ export async function updateWorkoutEntry(
   entryId: string,
   updates: Partial<WorkoutEntry>
 ): Promise<void> {
+  if (IS_MOCK_MODE) return MockFirestore.updateWorkoutEntry(userId, workoutId, entryId, updates);
   const workoutRef = doc(db, `users/${userId}/workouts/${workoutId}`);
   const workoutSnap = await getDoc(workoutRef);
   
@@ -97,6 +102,7 @@ export async function deleteWorkoutEntry(
   workoutId: string,
   entryId: string
 ): Promise<void> {
+  if (IS_MOCK_MODE) return MockFirestore.deleteWorkoutEntry(userId, workoutId, entryId);
   const workoutRef = doc(db, `users/${userId}/workouts/${workoutId}`);
   const workoutSnap = await getDoc(workoutRef);
   
@@ -113,6 +119,7 @@ export async function deleteWorkoutEntry(
 }
 
 export async function deleteWorkout(userId: string, workoutId: string): Promise<void> {
+  if (IS_MOCK_MODE) return MockFirestore.deleteWorkout(userId, workoutId);
   await deleteDoc(doc(db, `users/${userId}/workouts/${workoutId}`));
 }
 
@@ -121,6 +128,7 @@ export async function deleteMovementFromWorkout(
   workoutId: string,
   movementName: string
 ): Promise<void> {
+  if (IS_MOCK_MODE) return MockFirestore.deleteMovementFromWorkout(userId, workoutId, movementName);
   const workoutRef = doc(db, `users/${userId}/workouts/${workoutId}`);
   const workoutSnap = await getDoc(workoutRef);
   
@@ -137,17 +145,20 @@ export async function deleteMovementFromWorkout(
 }
 
 export async function finishWorkout(userId: string, workoutId: string): Promise<void> {
+  if (IS_MOCK_MODE) return MockFirestore.finishWorkout(userId, workoutId);
   const workoutRef = doc(db, `users/${userId}/workouts/${workoutId}`);
   await updateDoc(workoutRef, { completed: true });
 }
 
 // Movements
 export async function getMovements(userId: string): Promise<Movement[]> {
+  if (IS_MOCK_MODE) return MockFirestore.getMovements(userId);
   const snapshot = await getDocs(collection(db, `users/${userId}/movements`));
   return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as Movement));
 }
 
 export async function setMovements(userId: string, movements: Omit<Movement, 'id'>[]): Promise<void> {
+  if (IS_MOCK_MODE) return MockFirestore.setMovements(userId, movements);
   const batch = movements.map(async m => {
     const newRef = doc(collection(db, `users/${userId}/movements`));
     await setDoc(newRef, { ...m, id: newRef.id });
@@ -156,17 +167,20 @@ export async function setMovements(userId: string, movements: Omit<Movement, 'id
 }
 
 export async function deleteMovement(userId: string, movementId: string): Promise<void> {
+  if (IS_MOCK_MODE) return MockFirestore.deleteMovement(userId, movementId);
   await deleteDoc(doc(db, `users/${userId}/movements/${movementId}`));
 }
 
 // Templates
 export async function getTemplates(userId: string): Promise<Template[]> {
+  if (IS_MOCK_MODE) return MockFirestore.getTemplates(userId);
   const q = query(collection(db, `users/${userId}/templates`), orderBy('order', 'asc'));
   const snapshot = await getDocs(q);
   return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as Template));
 }
 
 export async function saveTemplate(userId: string, template: Omit<Template, 'id'> | Template): Promise<Template> {
+  if (IS_MOCK_MODE) return MockFirestore.saveTemplate(userId, template);
   if ('id' in template && template.id) {
     const ref = doc(db, `users/${userId}/templates/${template.id}`);
     await setDoc(ref, template);
@@ -180,10 +194,12 @@ export async function saveTemplate(userId: string, template: Omit<Template, 'id'
 }
 
 export async function deleteTemplate(userId: string, templateId: string): Promise<void> {
+  if (IS_MOCK_MODE) return MockFirestore.deleteTemplate(userId, templateId);
   await deleteDoc(doc(db, `users/${userId}/templates/${templateId}`));
 }
 
 export async function updateTemplateOrders(userId: string, templates: Template[]): Promise<void> {
+  if (IS_MOCK_MODE) return MockFirestore.updateTemplateOrders(userId, templates);
   const batch = templates.map((t, idx) => {
     return updateDoc(doc(db, `users/${userId}/templates/${t.id}`), { order: idx });
   });
@@ -192,6 +208,7 @@ export async function updateTemplateOrders(userId: string, templates: Template[]
 
 // Settings
 export async function getUserSettings(userId: string): Promise<UserSettings> {
+  if (IS_MOCK_MODE) return MockFirestore.getUserSettings(userId);
   const ref = doc(db, `users/${userId}/settings/current`);
   const snap = await getDoc(ref);
   if (snap.exists()) {
@@ -202,6 +219,7 @@ export async function getUserSettings(userId: string): Promise<UserSettings> {
 }
 
 export async function saveUserSettings(userId: string, settings: Partial<UserSettings>): Promise<void> {
+  if (IS_MOCK_MODE) return MockFirestore.saveUserSettings(userId, settings);
   const ref = doc(db, `users/${userId}/settings/current`);
   await setDoc(ref, settings, { merge: true });
 }
