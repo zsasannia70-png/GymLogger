@@ -1,36 +1,28 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏋️‍♀️ GymLogger
 
-## Getting Started
+A modern, mobile-first fitness tracking application built with **Next.js** and **Firebase**. This app allows users to manage workout routines, track exercises, and save progress seamlessly.
 
-First, run the development server:
+## 🚀 Key Features
+- **Routine Management:** Pre-loaded with "Majestic" full-body routines (A, B, and C).
+- **Hybrid Storage:** Supports **Demo Mode** using browser LocalStorage and **Cloud Mode** via Firebase.
+- **Mobile First:** Designed to be installed as a PWA (Progressive Web App) on smartphones.
+- **Real-time Updates:** Instant UI updates using React Context and Hooks.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🛠 Tech Stack
+- **Framework:** [Next.js](https://nextjs.org/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **Database & Auth:** [Google Firebase](https://firebase.google.com/)
+- **Deployment:** [Vercel](https://vercel.com/)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📱 How to Use on Your Phone
+1. Open the [Live Demo Link](REPLACE_WITH_YOUR_VERCEL_URL) in your mobile browser.
+2. Tap the **Share** button (iOS) or **Menu** (Android).
+3. Select **"Add to Home Screen"**.
+4. Launch GymLogger from your home screen like a native app!
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔧 Installation & Setup
+To run this project locally:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Clone the repository:
+   ```bash
+   git clone [https://github.com/zsasannia70-png/GymLogger.git](https://github.com/zsasannia70-png/GymLogger.git)

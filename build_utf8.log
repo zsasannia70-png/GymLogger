@@ -1,0 +1,57 @@
+﻿
+> gym-logger@0.1.0 build
+> next build
+
+Γû▓ Next.js 16.2.2 (Turbopack)
+
+  Creating an optimized production build ...
+  Using external babel configuration from C:\Users\ROG\Desktop\Xamk\Lessons\AI in practice\Assignments\GymLogger\gym-logger\.babelrc
+Γ£ô Compiled successfully in 4.1s
+  Running TypeScript ...
+  Finished TypeScript in 2.1s ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/10) ...
+node.exe : Error occurred 
+prerendering page 
+"/_not-found". Read more: 
+https://nextjs.org/docs/me
+ssages/prerender-error
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (E  
+  rror occurred ...prer   
+ ender-error:String) [    
+], RemoteException
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+TypeError: Cannot read 
+properties of undefined 
+(reading 'H')
+    at a.s.title (C:\Users
+\ROG\Desktop\Xamk\Lessons\
+AI in practice\Assignments
+\GymLogger\gym-logger\.nex
+t\server\chunks\ssr\[root-
+of-the-server]__004bqo6._.
+js:1:8416)
+    at stringify 
+(<anonymous>) {
+  digest: '4177479815'
+}
+Export encountered an 
+error on 
+/_not-found/page: 
+/_not-found, exiting the 
+build.
+Γ¿» Next.js build worker 
+exited with code: 1 and 
+signal: null
